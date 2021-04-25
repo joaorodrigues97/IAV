@@ -6,7 +6,7 @@ public class Block : MonoBehaviour
 {
 
     enum Cubeside { BOTTOM, TOP, LEFT, RIGHT, FRONT, BACK }
-    public enum BlockType { GRASS, DIRT, STONE, AIR };
+    public enum BlockType { GRASS, DIRT, STONE, AIR, TREEWOOD };
     Material material;
     public BlockType bType;
     Chunk owner;
@@ -18,14 +18,15 @@ public class Block : MonoBehaviour
     static Vector2 GrassTop_LBC = new Vector2(2f, 6f) / 16;
     static Vector2 Dirt_LBC = new Vector2(2f, 15f) / 16;
     static Vector2 Stone_LBC = new Vector2(0f, 14f) / 16;
+    static Vector2 Wood_LBC = new Vector2(4f, 8f) / 16;
 
     Vector2[,] blockUVs =
     {
         {GrassTop_LBC, GrassTop_LBC + new Vector2(1f, 0f)/16, GrassTop_LBC + new Vector2(0f, 1f)/16, GrassTop_LBC + new Vector2(1f, 1f)/16 },
         {GrassSide_LBC, GrassSide_LBC + new Vector2(1f, 0f)/16, GrassSide_LBC + new Vector2(0f, 1f)/16, GrassSide_LBC + new Vector2(1f, 1f)/16 },
         {Dirt_LBC, Dirt_LBC + new Vector2(1f, 0f)/16, Dirt_LBC + new Vector2(0f, 1f)/16, Dirt_LBC + new Vector2(1f, 1f)/16 },
-        {Stone_LBC, Stone_LBC + new Vector2(1f, 0f)/16, Stone_LBC + new Vector2(0f, 1f)/16, Stone_LBC + new Vector2(1f, 1f)/16 }
-
+        {Stone_LBC, Stone_LBC + new Vector2(1f, 0f)/16, Stone_LBC + new Vector2(0f, 1f)/16, Stone_LBC + new Vector2(1f, 1f)/16 },
+         {Wood_LBC, Wood_LBC + new Vector2(1f, 0f)/16, Wood_LBC + new Vector2(0f, 1f)/16, Wood_LBC + new Vector2(1f, 1f)/16 }
     };
 
     public Block(BlockType bType, Vector3 pos, Chunk owner, Material material)
@@ -77,10 +78,20 @@ public class Block : MonoBehaviour
         }
         else
         {
-            uv00 = blockUVs[(int)(bType + 1), 0];
-            uv10 = blockUVs[(int)(bType + 1), 1];
-            uv01 = blockUVs[(int)(bType + 1), 2];
-            uv11 = blockUVs[(int)(bType + 1), 3];
+            if (bType == BlockType.TREEWOOD)
+            {
+                uv00 = blockUVs[(int)bType, 0];
+                uv10 = blockUVs[(int)bType, 1];
+                uv01 = blockUVs[(int)bType, 2];
+                uv11 = blockUVs[(int)bType, 3];
+            }
+            else
+            {
+                uv00 = blockUVs[(int)(bType + 1), 0];
+                uv10 = blockUVs[(int)(bType + 1), 1];
+                uv01 = blockUVs[(int)(bType + 1), 2];
+                uv11 = blockUVs[(int)(bType + 1), 3];
+            }
         }
 
         Vector3[] vertices = new Vector3[4];

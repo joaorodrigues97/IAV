@@ -6,15 +6,18 @@ public class Chunk
 {
     public Block[,,] chunkData;
     public GameObject goChunk;
-    public enum chunkStatus { DRAW, DONE};
+    public enum chunkStatus { DRAW, DONE };
     Material material;
     public chunkStatus status;
+    Vector3[] treeBlock;
+    int counter;
 
     public Chunk(Vector3 pos, Material material)
     {
         goChunk = new GameObject(World.CreateChunkName(pos));
         goChunk.transform.position = pos;
         this.material = material;
+        counter = 0;
         BuildChunk();
     }
 
@@ -32,9 +35,10 @@ public class Chunk
                     int worldX = (int)goChunk.transform.position.x + x;
                     int worldY = (int)goChunk.transform.position.y + y;
                     int worldZ = (int)goChunk.transform.position.z + z;
-                    int h = Utils.GenerateHeight(worldX,worldZ);
+                    int h = Utils.GenerateHeight(worldX, worldZ);
                     int hs = Utils.GenerateStoneHeight(worldX, worldZ);
-                    if(worldY <= hs)
+
+                    if (worldY <= hs)
                     {
                         if (Utils.fBM3D(worldX, worldY, worldZ, 1, 0.5f) < 0.51f)
                         {
@@ -48,22 +52,42 @@ public class Chunk
                     else if (worldY == h)
                     {
                         chunkData[x, y, z] = new Block(Block.BlockType.GRASS, pos, this, material);
-                    }
-                    else if (worldY < h)
-                    {
+                        if (Random.Range(0f, 1f) < 0.2f)
+                        {
+                            for (int i = 0; i < 4; i++)
+                            {
+                                chunkData[x, y + i, z] = new Block(Block.BlockType.TREEWOOD, pos, this, material);
+                                treeBlock[counter] = new Vector3(x, y + 1, z);
 
-                        chunkData[x, y, z] = new Block(Block.BlockType.DIRT, pos, this, material);
-                    }
-                    else
-                    {
-                        chunkData[x, y, z] = new Block(Block.BlockType.AIR, pos, this, material);
+                            }
+                        }
+                        else if (worldY < h)
+                        {
+
+                            chunkData[x, y, z] = new Block(Block.BlockType.DIRT, pos, this, material);
+                        }
+                        else
+                        {
+                            for (int i  = 0; i < treeBlock.Length; i++)
+                            {
+                                if (treeBlock[i] == new Vector3(x,y,z))
+                                {
+                                    
+                                }
+                            }
+                            chunkData[x, y, z] = new Block(Block.BlockType.AIR, pos, this, material);
+
+
+                        }
                     }
                 }
             }
+            status = chunkStatus.DRAW;
         }
-        status = chunkStatus.DRAW;
     }
-    public void DrawChunk() { 
+
+    public void DrawChunk()
+    {
         for (int z = 0; z < World.chunkSize; z++)
         {
             for (int y = 0; y < World.chunkSize; y++)
@@ -79,6 +103,9 @@ public class Chunk
         collider.sharedMesh = goChunk.GetComponent<MeshFilter>().mesh;
         status = chunkStatus.DONE;
     }
+
+
+
 
     void CombineQuads()
     {

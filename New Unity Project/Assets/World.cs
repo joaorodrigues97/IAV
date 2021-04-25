@@ -41,6 +41,7 @@ public class World : MonoBehaviour
             {
                 Destroy(c.goChunk);
                 chunkDict.TryRemove(name, out c);
+                toRemove.Remove(name);
                 yield return null;
             }
         }
@@ -128,6 +129,7 @@ public class World : MonoBehaviour
         Vector3 movement = player.transform.position - lastBuildPos;
         if (movement.magnitude > chunkSize)
         {
+            StopAllCoroutines();
             lastBuildPos = player.transform.position;
             Building(whichChunk(lastBuildPos), radius);
             Drawing();
