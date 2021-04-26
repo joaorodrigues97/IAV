@@ -7,7 +7,7 @@ public class World : MonoBehaviour
 {
     public Material material;
     public static int chunkSize = 16;
-    public static int radius = 2;
+    public static int radius = 1;
     public static ConcurrentDictionary<string, Chunk> chunkDict;
     public static List<string> toRemove = new List<string>();
     public GameObject player;

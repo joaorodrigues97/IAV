@@ -9,15 +9,12 @@ public class Chunk
     public enum chunkStatus { DRAW, DONE };
     Material material;
     public chunkStatus status;
-    Vector3[] treeBlock;
-    int counter;
 
     public Chunk(Vector3 pos, Material material)
     {
         goChunk = new GameObject(World.CreateChunkName(pos));
         goChunk.transform.position = pos;
         this.material = material;
-        counter = 0;
         BuildChunk();
     }
 
@@ -51,34 +48,36 @@ public class Chunk
                     }
                     else if (worldY == h)
                     {
-                        chunkData[x, y, z] = new Block(Block.BlockType.GRASS, pos, this, material);
-                        if (Random.Range(0f, 1f) < 0.2f)
-                        {
-                            for (int i = 0; i < 4; i++)
-                            {
-                                chunkData[x, y + i, z] = new Block(Block.BlockType.TREEWOOD, pos, this, material);
-                                treeBlock[counter] = new Vector3(x, y + 1, z);
-
-                            }
-                        }
-                        else if (worldY < h)
+                        
+                        if (Random.Range(0f, 1f) < 0.1f)
                         {
 
-                            chunkData[x, y, z] = new Block(Block.BlockType.DIRT, pos, this, material);
+                            chunkData[x, y, z] = new Block(Block.BlockType.TREEWOOD, pos, this, material);
+
                         }
                         else
                         {
-                            for (int i  = 0; i < treeBlock.Length; i++)
-                            {
-                                if (treeBlock[i] == new Vector3(x,y,z))
-                                {
-                                    
-                                }
-                            }
-                            chunkData[x, y, z] = new Block(Block.BlockType.AIR, pos, this, material);
-
-
+                            chunkData[x, y, z] = new Block(Block.BlockType.GRASS, pos, this, material);
                         }
+
+                    }
+                    else if (worldY < h)
+                    {
+
+                        chunkData[x, y, z] = new Block(Block.BlockType.DIRT, pos, this, material);
+                    }
+                    else
+                    {
+                        if (chunkData[x, y - 1,z].bType == Block.BlockType.TREEWOOD)
+                        {
+                            chunkData[x, y, z] = new Block(Block.BlockType.TREEWOOD, pos, this, material);
+                        }
+                        else
+                        {
+                            chunkData[x, y, z] = new Block(Block.BlockType.AIR, pos, this, material);
+                        }
+                        
+                        
                     }
                 }
             }
