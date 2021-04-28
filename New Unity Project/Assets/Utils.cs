@@ -5,7 +5,7 @@ using UnityEngine;
 public class Utils
 {
 
-    static float smooth = 0.0002f;
+    static float smooth = 0.0005f;
     static float smooth3D = 10f * smooth;
     static int maxHeight = 150;
     static int octaves = 6;
