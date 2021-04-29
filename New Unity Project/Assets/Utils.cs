@@ -5,8 +5,9 @@ using UnityEngine;
 public class Utils
 {
 
-    static float smooth = 0.0005f;
-    static float smooth3D = 10f * smooth;
+    //static float smooth = 0.0005f;
+    static float smooth = 0.002f;
+    static float smooth3D = 20f * smooth;
     static int maxHeight = 150;
     static int octaves = 6;
     static float persistence = 0.7f;
@@ -23,6 +24,10 @@ public class Utils
         return (int)Map(0, maxHeight -10, 0, 1, fBM(x *3* smooth, z *3 * smooth, octaves - 1, 1.2f*persistence));
     }
 
+    public static int GenerateLavaHeight(float x, float z)
+    {
+        return (int)Map(0, maxHeight - 30, 0, 1, fBM(x * 3 * smooth, z * 3 * smooth, octaves - 1, 1.2f * persistence));
+    }
 
     static float Map(float newmin, float newmax, float orimin, float orimax, float val)
     {

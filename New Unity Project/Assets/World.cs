@@ -9,7 +9,7 @@ public class World : MonoBehaviour
     public Material material;
     public Camera cam;
     public static int chunkSize = 16;
-    public static int radius = 2;
+    public static int radius = 3;
     public static ConcurrentDictionary<string, Chunk> chunkDict;
     public static List<string> toRemove = new List<string>();
     Vector3 lastBuildPos;
@@ -169,32 +169,32 @@ public class World : MonoBehaviour
         {
             
             RaycastHit hitInfo;
-            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hitInfo, 100f))
+            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hitInfo, 4f))
             {
-                //destroy
-                Vector3 pointInTargetBlock = hitInfo.point + cam.transform.forward * .01f;//move a little inside the block
+                
+                Vector3 pointInTargetBlock = hitInfo.point + cam.transform.forward * .01f;
             
                 Debug.Log(pointInTargetBlock);
-                //get the terrain chunk (can't just use collider)
+               
                 int chunkPosX = Mathf.FloorToInt(pointInTargetBlock.x / 16f) * 16;
                 int chunkPosY = Mathf.FloorToInt(pointInTargetBlock.y / 16f) * 16;
                 int chunkPosZ = Mathf.FloorToInt(pointInTargetBlock.z / 16f) * 16;
-
+                
 
                 foreach (KeyValuePair<string, Chunk> c in chunkDict)
                 {
                     if (int.Parse(c.Key.Split(' ')[0]) == whichChunk(pointInTargetBlock).x && int.Parse(c.Key.Split(' ')[1]) == whichChunk(pointInTargetBlock).y && int.Parse(c.Key.Split(' ')[2]) == whichChunk(pointInTargetBlock).z)
                     {
-                        //index of the target block
-                        int bix = Mathf.FloorToInt(pointInTargetBlock.x) - chunkPosX;
-                        int biy = Mathf.FloorToInt(pointInTargetBlock.y) -chunkPosY;
-                        int biz = Mathf.FloorToInt(pointInTargetBlock.z) -chunkPosZ;
+                       
+                        int bix = Mathf.RoundToInt(pointInTargetBlock.x) - chunkPosX;
+                        int biy = Mathf.RoundToInt(pointInTargetBlock.y) -chunkPosY;
+                        int biz = Mathf.RoundToInt(pointInTargetBlock.z) -chunkPosZ;
                         
-                        if (rightClick)//replace block with air
+                        if (rightClick)
                         {
                             c.Value.chunkData[bix, biy, biz] = new Block(Block.BlockType.AIR, new Vector3(bix, biy, biz), c.Value, material);
-                          
 
+                            
                             MeshCollider mesh = c.Value.goChunk.GetComponent<MeshCollider>();
                             MeshFilter meshf = c.Value.goChunk.GetComponent<MeshFilter>();
                             MeshRenderer meshr = c.Value.goChunk.GetComponent<MeshRenderer>();

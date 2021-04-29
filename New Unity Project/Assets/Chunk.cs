@@ -37,11 +37,36 @@ public class Chunk
                     int h = Utils.GenerateHeight(worldX, worldZ);
                     int hs = Utils.GenerateStoneHeight(worldX, worldZ);
 
-                    if (worldY <= hs)
+                    int hLava = Utils.GenerateLavaHeight(worldX, worldZ);
+
+                    if (worldY <= hLava)
                     {
-                        if (Utils.fBM3D(worldX, worldY, worldZ, 1, 0.5f) < 0.51f)
-                        {
+                        if (Utils.fBM3D(worldX, worldY, worldZ, 1, 0.5f) < 0.495f)
+                            chunkData[x, y, z] = new Block(Block.BlockType.LAVA, pos, this, material);
+                        else
                             chunkData[x, y, z] = new Block(Block.BlockType.STONE, pos, this, material);
+                    }
+                    else if (worldY <= hs)
+                    {
+                        if (Utils.fBM3D(worldX, worldY, worldZ, 1, 0.5f) < 0.53f)
+                        {
+                            if (Utils.fBM3D(worldX, worldY, worldZ, 1, 0.5f) < 0.40f)
+                            {
+                                if(Random.Range(0f,1f) < 0.3f)
+                                {
+                                    chunkData[x, y, z] = new Block(Block.BlockType.DIAMONDS, pos, this, material);
+                                }
+                                else
+                                {
+                                    chunkData[x, y, z] = new Block(Block.BlockType.STONE, pos, this, material);
+                                }
+                                
+                            }
+                            else
+                            {
+                                chunkData[x, y, z] = new Block(Block.BlockType.STONE, pos, this, material);
+                            }
+                            //chunkData[x, y, z] = new Block(Block.BlockType.STONE, pos, this, material);
                         }
                         else
                         {
@@ -183,7 +208,6 @@ public class Chunk
             }
         }
         CombineQuadsAfter(mf,mr);
-        //MeshCollider collider = goChunk.AddComponent<MeshCollider>();
         collider.sharedMesh = goChunk.GetComponent<MeshFilter>().mesh;
         status = chunkStatus.DONE;
     }
@@ -203,12 +227,11 @@ public class Chunk
             i++;
         }
 
-        //MeshFilter mf = (MeshFilter)goChunk.AddComponent<MeshFilter>();
         mf.mesh = new Mesh();
         mf.mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         mf.mesh.CombineMeshes(combine);
+        
 
-        //MeshRenderer renderer = goChunk.AddComponent<MeshRenderer>();
         renderer.material = material;
 
         foreach (Transform quad in goChunk.transform)
