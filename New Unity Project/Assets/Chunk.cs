@@ -60,7 +60,9 @@ public class Chunk
                         }
                         else
                         {
-                            chunkData[x, y, z] = new Block(Block.BlockType.GRASS, pos, this, material);
+                           
+                             chunkData[x, y, z] = new Block(Block.BlockType.GRASS, pos, this, material);
+                            
                         }
 
                     }
@@ -71,15 +73,6 @@ public class Chunk
                     }
                     else
                     {
-                        /*if (chunkData[x, y - 1,z].bType == Block.BlockType.TREEWOOD)
-                        {
-                            chunkData[x, y, z] = new Block(Block.BlockType.TREEWOOD, pos, this, material);
-
-                        }
-                        else
-                        {
-                            chunkData[x, y, z] = new Block(Block.BlockType.AIR, pos, this, material);
-                        }*/
 
                         chunkData[x, y, z] = new Block(Block.BlockType.AIR, pos, this, material);
 
@@ -126,6 +119,7 @@ public class Chunk
             }
         }
     }
+
 
     public void DrawChunk()
     {

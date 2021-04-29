@@ -23,6 +23,7 @@ public class Utils
         return (int)Map(0, maxHeight -10, 0, 1, fBM(x *3* smooth, z *3 * smooth, octaves - 1, 1.2f*persistence));
     }
 
+
     static float Map(float newmin, float newmax, float orimin, float orimax, float val)
     {
         return Mathf.Lerp(newmin, newmax, Mathf.InverseLerp(orimin, orimax, val));

@@ -6,7 +6,7 @@ public class Block : MonoBehaviour
 {
 
     enum Cubeside { BOTTOM, TOP, LEFT, RIGHT, FRONT, BACK }
-    public enum BlockType { GRASS, DIRT, STONE, TREEWOOD, LEAF, AIR,};
+    public enum BlockType { GRASS, DIRT, STONE, TREEWOOD, LEAF, LAVA, AIR};
     Material material;
     public BlockType bType;
     Chunk owner;
@@ -20,6 +20,7 @@ public class Block : MonoBehaviour
     static Vector2 Stone_LBC = new Vector2(1f, 15f) / 16;
     static Vector2 Wood_LBC = new Vector2(4f, 8f) / 16;
     static Vector2 Leaf_LBC = new Vector2(6f, 12f) / 16;
+    static Vector2 Lava_LBC = new Vector2(15f, 0f) / 16;
 
     Vector2[,] blockUVs =
     {
@@ -28,7 +29,8 @@ public class Block : MonoBehaviour
         {Dirt_LBC, Dirt_LBC + new Vector2(1f, 0f)/16, Dirt_LBC + new Vector2(0f, 1f)/16, Dirt_LBC + new Vector2(1f, 1f)/16 },
         {Stone_LBC, Stone_LBC + new Vector2(1f, 0f)/16, Stone_LBC + new Vector2(0f, 1f)/16, Stone_LBC + new Vector2(1f, 1f)/16 },
          {Wood_LBC, Wood_LBC + new Vector2(1f, 0f)/16, Wood_LBC + new Vector2(0f, 1f)/16, Wood_LBC + new Vector2(1f, 1f)/16 },
-        {Leaf_LBC, Leaf_LBC + new Vector2(1f, 0f)/16, Leaf_LBC + new Vector2(0f, 1f)/16, Leaf_LBC + new Vector2(1f, 1f)/16 }
+        {Leaf_LBC, Leaf_LBC + new Vector2(1f, 0f)/16, Leaf_LBC + new Vector2(0f, 1f)/16, Leaf_LBC + new Vector2(1f, 1f)/16 },
+        {Lava_LBC, Lava_LBC + new Vector2(1f, 0f)/16, Lava_LBC + new Vector2(0f, 1f)/16, Lava_LBC + new Vector2(1f, 1f)/16 }
     };
 
     public Block(BlockType bType, Vector3 pos, Chunk owner, Material material)
