@@ -82,25 +82,11 @@ public class World : MonoBehaviour
                 c.Value.DrawChunk();
                 yield return null;
             }
-            /*if(c.Value.goChunk && Vector3.Distance(player.transform.position, c.Value.goChunk.transform.position) > chunkSize * radius)
-            {
-                toRemove.Add(c.Key);
-            }*/
-            Vector3 chunkPos = c.Value.goChunk.transform.position;
             Vector3 playerChunkPos = whichChunk(player.transform.position);
-            /*if (c.Value.goChunk && Vector3.Distance(getChunkCenter(playerChunkPos), getChunkCenter(chunkPos)) > chunkSize * radius)
-            {
-                toRemove.Add(c.Key);
-            }*/
+            
             
             if (Mathf.Abs(playerChunkPos.x - int.Parse(c.Key.Split(' ')[0])) > 16*radius || Mathf.Abs(playerChunkPos.z - int.Parse(c.Key.Split(' ')[2])) > 16 * radius || Mathf.Abs(playerChunkPos.y - int.Parse(c.Key.Split(' ')[1])) > 16 * radius)
             {
-                //Debug.Log("PLAYER X: "+getChunkCenter(playerChunkPos).x);
-                //Debug.Log("PLAYER Z: " + getChunkCenter(playerChunkPos).z);
-                //Debug.Log("PLAYER X: " + int.Parse(c.Key.Split(' ')[0]));
-                //Debug.Log("PLAYER Z: " + int.Parse(c.Key.Split(' ')[2]));
-                //Debug.Log("RESULTADO FINAL X: "+Mathf.Abs(getChunkCenter(playerChunkPos).x - int.Parse(c.Key.Split(' ')[0])));
-                //Debug.Log("RESULTADO FINAL Y: " + Mathf.Abs(getChunkCenter(playerChunkPos).z - int.Parse(c.Key.Split(' ')[2])));
                 toRemove.Add(c.Key);
             }
         }
@@ -124,6 +110,37 @@ public class World : MonoBehaviour
         chunkPos.x = Mathf.Floor(position.x / chunkSize) * chunkSize;
         chunkPos.y = Mathf.Floor(position.y / chunkSize) * chunkSize;
         chunkPos.z = Mathf.Floor(position.z / chunkSize) * chunkSize;
+
+        return chunkPos;
+    }
+
+    Vector3 whichChunkDestroy(Vector3 position)
+    {
+        Vector3 chunkPos = new Vector3();
+        if (Mathf.Abs(position.x)%16 > 0 && Mathf.Abs(position.x) % 16 < 1)
+        {
+            chunkPos.x = Mathf.Floor(Mathf.Abs(position.x) / chunkSize) * chunkSize;
+        }
+        else
+        {
+            chunkPos.x = Mathf.Floor(position.x / chunkSize) * chunkSize;
+        }
+        if (Mathf.Abs(position.y) % 16 > 0 && Mathf.Abs(position.y) % 16 < 1)
+        {
+            chunkPos.y = Mathf.Floor(Mathf.Abs(position.y) / chunkSize) * chunkSize;
+        }
+        else
+        {
+            chunkPos.y = Mathf.Floor(position.y / chunkSize) * chunkSize;
+        }
+        if (Mathf.Abs(position.z) % 16 > 0 && Mathf.Abs(position.z) % 16 < 1)
+        {
+            chunkPos.z = Mathf.Floor(Mathf.Abs(position.z) / chunkSize) * chunkSize;
+        }
+        else
+        {
+            chunkPos.z = Mathf.Floor(position.z / chunkSize) * chunkSize;
+        }
 
         return chunkPos;
     }
@@ -174,33 +191,27 @@ public class World : MonoBehaviour
                 
                 Vector3 pointInTargetBlock = hitInfo.point + cam.transform.forward * .01f;
             
-                Debug.Log(pointInTargetBlock);
-               
-                int chunkPosX = Mathf.FloorToInt(pointInTargetBlock.x / 16f) * 16;
-                int chunkPosY = Mathf.FloorToInt(pointInTargetBlock.y / 16f) * 16;
-                int chunkPosZ = Mathf.FloorToInt(pointInTargetBlock.z / 16f) * 16;
-                
+                int chunkPosX = Mathf.FloorToInt(pointInTargetBlock.x / 16) * 16;
+                int chunkPosY = Mathf.FloorToInt(pointInTargetBlock.y / 16) * 16;
+                int chunkPosZ = Mathf.FloorToInt(pointInTargetBlock.z / 16) * 16;
 
                 foreach (KeyValuePair<string, Chunk> c in chunkDict)
                 {
-                    if (int.Parse(c.Key.Split(' ')[0]) == whichChunk(pointInTargetBlock).x && int.Parse(c.Key.Split(' ')[1]) == whichChunk(pointInTargetBlock).y && int.Parse(c.Key.Split(' ')[2]) == whichChunk(pointInTargetBlock).z)
+                    if (int.Parse(c.Key.Split(' ')[0]) == whichChunkDestroy(pointInTargetBlock).x && int.Parse(c.Key.Split(' ')[1]) == whichChunkDestroy(pointInTargetBlock).y && int.Parse(c.Key.Split(' ')[2]) == whichChunkDestroy(pointInTargetBlock).z)
                     {
+                        int bix = Mathf.FloorToInt(Mathf.RoundToInt(pointInTargetBlock.x) - chunkPosX)%16;
+                        int biy = Mathf.FloorToInt(Mathf.RoundToInt(pointInTargetBlock.y) -chunkPosY)%16;
+                        int biz = Mathf.FloorToInt(Mathf.RoundToInt(pointInTargetBlock.z) -chunkPosZ)%16;
                        
-                        int bix = Mathf.RoundToInt(pointInTargetBlock.x) - chunkPosX;
-                        int biy = Mathf.RoundToInt(pointInTargetBlock.y) -chunkPosY;
-                        int biz = Mathf.RoundToInt(pointInTargetBlock.z) -chunkPosZ;
-                        
-                        if (rightClick)
-                        {
-                            c.Value.chunkData[bix, biy, biz] = new Block(Block.BlockType.AIR, new Vector3(bix, biy, biz), c.Value, material);
+                        c.Value.chunkData[bix, biy, biz] = new Block(Block.BlockType.AIR, new Vector3(bix, biy, biz), c.Value, material);
+                       
 
-                            
-                            MeshCollider mesh = c.Value.goChunk.GetComponent<MeshCollider>();
-                            MeshFilter meshf = c.Value.goChunk.GetComponent<MeshFilter>();
-                            MeshRenderer meshr = c.Value.goChunk.GetComponent<MeshRenderer>();
+                        MeshCollider mesh = c.Value.goChunk.GetComponent<MeshCollider>();
+                        MeshFilter meshf = c.Value.goChunk.GetComponent<MeshFilter>();
+                        MeshRenderer meshr = c.Value.goChunk.GetComponent<MeshRenderer>();
 
-                            c.Value.DrawChunkAfter(mesh, meshf, meshr, c.Value);
-                        }
+                        c.Value.DrawChunkAfter(mesh, meshf, meshr, c.Value);
+
                     }
                 }
 

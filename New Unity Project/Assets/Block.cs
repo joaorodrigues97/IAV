@@ -141,6 +141,17 @@ public class Block : MonoBehaviour
         mf.mesh = mesh;
     }
 
+    public static readonly Vector3[] faceChecks = new Vector3[6] {
+
+        new Vector3(0.0f, 0.0f, -1.0f),
+        new Vector3(0.0f, 0.0f, 1.0f),
+        new Vector3(0.0f, 1.0f, 0.0f),
+        new Vector3(0.0f, -1.0f, 0.0f),
+        new Vector3(-1.0f, 0.0f, 0.0f),
+        new Vector3(1.0f, 0.0f, 0.0f)
+
+    };
+
     int convertToLocalIndex(int i)
     {
         if (i == -1)
